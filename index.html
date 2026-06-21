@@ -31,6 +31,10 @@
       --display: "Syne", sans-serif;
       --body: "Inter", sans-serif;
       --mono: "JetBrains Mono", monospace;
+      --text-label: 10px;
+      --text-meta: 12px;
+      --text-small: 14px;
+      --text-body: 16px;
     }
 
     html { scroll-behavior: smooth; background: var(--ink); }
@@ -153,38 +157,39 @@
     .add-link:active { transform: translateY(1px); }
 
     .hero {
-      min-height: min(720px, calc(100dvh - 108px));
+      min-height: auto;
       display: grid;
-      grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.65fr);
-      grid-template-rows: 1fr auto;
+      grid-template-columns: minmax(0, 0.85fr) minmax(460px, 1.15fr);
+      grid-template-rows: auto auto;
       column-gap: clamp(32px, 7vw, 110px);
-      padding: clamp(54px, 9vh, 96px) 0 30px;
+      padding: clamp(48px, 7vw, 82px) 0 30px;
       border-bottom: 1px solid var(--line);
     }
     .hero-main { align-self: center; }
     .hero-kicker {
       max-width: 28ch;
-      margin-bottom: clamp(22px, 4vh, 42px);
-      color: var(--paper-soft);
-      font-size: 14px;
-      line-height: 1.6;
+      margin-bottom: 24px;
+      color: var(--paper-dim);
+      font-family: var(--mono);
+      font-size: var(--text-label);
+      text-transform: uppercase;
     }
     .counter-wrap { display: flex; align-items: flex-end; gap: clamp(14px, 2vw, 28px); }
     .counter {
       min-width: 1.2ch;
       color: var(--paper);
       font-family: var(--display);
-      font-size: clamp(116px, 22vw, 290px);
+      font-size: clamp(112px, 16vw, 220px);
       font-variant-numeric: tabular-nums;
       font-weight: 700;
       line-height: 0.72;
       letter-spacing: 0;
     }
     .counter-copy {
-      max-width: 9ch;
+      max-width: 10ch;
       padding-bottom: clamp(4px, 2vw, 24px);
       font-family: var(--display);
-      font-size: clamp(24px, 3.6vw, 52px);
+      font-size: clamp(25px, 3.2vw, 44px);
       font-weight: 600;
       line-height: 0.98;
     }
@@ -192,21 +197,6 @@
       align-self: center;
       border-left: 1px solid var(--line);
       padding-left: clamp(24px, 4vw, 48px);
-    }
-    .hero-side h1 {
-      font-family: var(--display);
-      font-size: clamp(28px, 4vw, 54px);
-      font-weight: 600;
-      line-height: 1.02;
-      overflow-wrap: anywhere;
-    }
-    .hero-side h1 span { color: var(--urgent); }
-    .hero-side p {
-      max-width: 31ch;
-      margin-top: 22px;
-      color: var(--paper-soft);
-      font-size: 15px;
-      line-height: 1.65;
     }
     .hero-foot {
       grid-column: 1 / -1;
@@ -230,6 +220,40 @@
       text-transform: uppercase;
       letter-spacing: 0.07em;
     }
+
+    .signal-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .signal {
+      min-width: 0;
+      min-height: 112px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 20px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .signal:nth-child(even) { border-right: 0; }
+    .signal:nth-child(n + 3) { border-bottom: 0; }
+    .signal-label {
+      color: var(--paper-dim);
+      font-family: var(--mono);
+      font-size: var(--text-label);
+      text-transform: uppercase;
+    }
+    .signal-value {
+      color: var(--paper);
+      font-family: var(--display);
+      font-size: clamp(24px, 2.8vw, 38px);
+      font-weight: 600;
+      line-height: 1;
+      overflow-wrap: anywhere;
+    }
+    .signal-value.urgent { color: var(--urgent); }
+    .signal-note { color: var(--paper-dim); font-size: 11px; }
 
     .section { padding: clamp(64px, 9vw, 116px) 0; border-bottom: 1px solid var(--line); }
     .section-title {
@@ -266,7 +290,7 @@
     .tower-list { display: grid; gap: 17px; }
     .tower-row {
       display: grid;
-      grid-template-columns: 74px minmax(0, 1fr) 32px;
+      grid-template-columns: 74px minmax(0, 1fr) 112px;
       gap: 12px;
       align-items: center;
       width: 100%;
@@ -288,6 +312,10 @@
     .tower-segment.low { background: var(--low); }
     .tower-row:hover .tower-name, .tower-row[aria-pressed="true"] .tower-name { color: var(--paper); }
     .tower-row[aria-pressed="true"] .tower-track { outline: 1px solid var(--paper); outline-offset: 3px; }
+    .tower-row.is-empty { min-height: 20px; opacity: 0.42; }
+    .tower-row.is-empty .tower-track { height: 1px; }
+    .tower-breakdown { color: var(--paper-dim); font-family: var(--mono); font-size: 9px; text-align: right; }
+    .tower-breakdown strong { color: var(--paper-soft); font-weight: 500; }
 
     .feed-head {
       display: grid;
@@ -304,7 +332,46 @@
     }
     .feed-summary { color: var(--paper-soft); font-size: 14px; }
     .feed-summary strong { color: var(--paper); }
-    .filter-panel { display: grid; gap: 14px; margin-bottom: 34px; }
+    .filter-panel {
+      position: sticky;
+      top: 68px;
+      z-index: 7;
+      display: grid;
+      gap: 12px;
+      margin: 0 0 26px;
+      padding: 14px;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background: rgba(12, 12, 14, 0.94);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+    .control-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .control-set { display: flex; align-items: center; gap: 8px; }
+    .control-label { color: var(--paper-dim); font-family: var(--mono); font-size: var(--text-label); text-transform: uppercase; }
+    .view-toggle { display: inline-grid; grid-template-columns: repeat(2, 1fr); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+    .view-button {
+      min-height: 34px;
+      padding: 0 12px;
+      border: 0;
+      border-right: 1px solid var(--line);
+      background: transparent;
+      color: var(--paper-soft);
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .view-button:last-child { border-right: 0; }
+    .view-button[aria-pressed="true"] { background: var(--paper); color: var(--ink); }
+    .sort-select {
+      min-height: 34px;
+      padding: 0 32px 0 11px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--ink);
+      color: var(--paper);
+      font-size: 12px;
+      cursor: pointer;
+    }
     .filter-group {
       display: flex;
       align-items: center;
@@ -319,7 +386,7 @@
       width: 58px;
       color: var(--paper-dim);
       font-family: var(--mono);
-      font-size: 9px;
+      font-size: var(--text-label);
       text-transform: uppercase;
     }
     .filter-button {
@@ -330,7 +397,7 @@
       border-radius: var(--radius);
       background: transparent;
       color: var(--paper-soft);
-      font-size: 12px;
+      font-size: var(--text-meta);
       cursor: pointer;
       white-space: nowrap;
       transition: border-color 150ms ease, color 150ms ease, background-color 150ms ease;
@@ -349,7 +416,7 @@
     .issue-card {
       --tone: var(--low);
       grid-column: span 6;
-      min-height: 320px;
+      min-height: 300px;
       display: flex;
       flex-direction: column;
       border: 1px solid var(--line);
@@ -368,14 +435,14 @@
     .issue-card.is-new { background: rgba(91, 108, 225, 0.09); border-color: rgba(91, 108, 225, 0.7); border-top-color: var(--accent); }
     .issue-card:hover { transform: translateY(-3px); border-color: var(--line-strong); background-color: rgba(242, 237, 230, 0.045); }
     .card-topline { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
-    .issue-number { color: var(--paper-dim); font-family: var(--mono); font-size: 9px; word-break: break-all; }
+    .issue-number { color: var(--paper-dim); font-family: var(--mono); font-size: var(--text-label); word-break: break-all; }
     .new-badge {
       padding: 4px 7px;
       border-radius: 3px;
       background: var(--accent);
       color: var(--paper);
       font-family: var(--mono);
-      font-size: 8px;
+      font-size: var(--text-label);
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.08em;
@@ -385,28 +452,30 @@
       max-width: 13ch;
       margin-top: 26px;
       font-family: var(--display);
-      font-size: clamp(27px, 3.2vw, 43px);
+      font-size: clamp(28px, 2.7vw, 38px);
       font-weight: 600;
       line-height: 0.98;
       overflow-wrap: anywhere;
     }
-    .issue-card:nth-child(5n + 1) .issue-type { font-size: clamp(32px, 4.2vw, 54px); }
+    .issue-card:nth-child(5n + 1) .issue-type { font-size: clamp(30px, 3vw, 42px); }
     .issue-description {
       max-width: 58ch;
       margin-top: 18px;
       color: var(--paper-soft);
-      font-size: 14px;
+      font-size: var(--text-body);
       line-height: 1.65;
       overflow-wrap: anywhere;
     }
-    .issue-context {
+    .issue-history {
       margin-top: 17px;
-      padding-left: 12px;
+      padding: 11px 0 0 12px;
       border-left: 2px solid var(--tone);
       color: var(--paper-dim);
-      font-size: 11px;
+      font-size: var(--text-meta);
       line-height: 1.55;
     }
+    .issue-history summary { color: var(--paper-soft); cursor: pointer; font-weight: 500; }
+    .issue-history p { margin-top: 8px; }
     .card-meta {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -415,9 +484,38 @@
       padding-top: 28px;
     }
     .meta-item { min-width: 0; }
-    .meta-label { display: block; color: var(--paper-dim); font-family: var(--mono); font-size: 8px; text-transform: uppercase; letter-spacing: 0.08em; }
-    .meta-value { display: block; margin-top: 3px; color: var(--paper-soft); font-family: var(--mono); font-size: 9px; overflow-wrap: anywhere; }
+    .meta-label { display: block; color: var(--paper-dim); font-family: var(--mono); font-size: var(--text-label); text-transform: uppercase; letter-spacing: 0.05em; }
+    .meta-value { display: block; margin-top: 4px; color: var(--paper-soft); font-family: var(--mono); font-size: var(--text-meta); line-height: 1.45; overflow-wrap: anywhere; }
     .meta-value.urgency { color: var(--tone); }
+    .card-footer { display: flex; justify-content: space-between; gap: 16px; margin-top: 18px; padding-top: 12px; border-top: 1px solid var(--line); color: var(--paper-dim); font-family: var(--mono); font-size: var(--text-label); }
+
+    .issues-grid.compact { display: block; border-top: 1px solid var(--line); }
+    .issues-grid.compact .issue-card,
+    .issues-grid.compact .issue-card:nth-child(5n + 1),
+    .issues-grid.compact .issue-card:nth-child(5n + 2) {
+      min-height: 0;
+      display: grid;
+      grid-template-columns: minmax(150px, 0.8fr) minmax(220px, 1.5fr) minmax(130px, 0.8fr) minmax(110px, 0.65fr) minmax(120px, 0.7fr);
+      gap: 18px;
+      align-items: center;
+      padding: 18px 0;
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      border-radius: 0;
+      background: transparent;
+    }
+    .issues-grid.compact .issue-card:hover { transform: none; background: rgba(242, 237, 230, 0.025); }
+    .issues-grid.compact .card-topline { display: none; }
+    .issues-grid.compact .issue-type { grid-column: 1; grid-row: 1; margin: 0; font-size: 18px; line-height: 1.15; }
+    .issues-grid.compact .issue-description { grid-column: 2; margin: 0; font-size: 14px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .issues-grid.compact .issue-history { display: none; }
+    .issues-grid.compact .card-meta { display: contents; }
+    .issues-grid.compact .meta-item { display: none; }
+    .issues-grid.compact .meta-item.location { display: block; grid-column: 3; }
+    .issues-grid.compact .meta-item.status { display: block; grid-column: 4; }
+    .issues-grid.compact .meta-item.impact { display: block; grid-column: 5; }
+    .issues-grid.compact .card-footer { display: none; }
+    .issues-grid.compact .issue-card.is-new { padding-left: 14px; border-left: 3px solid var(--accent); }
 
     .state-box {
       grid-column: 1 / -1;
@@ -460,20 +558,17 @@
       .board-label, .live-state { display: none; }
       .topbar-inner { grid-template-columns: 1fr auto; }
       .hero {
-        min-height: calc(100dvh - 108px);
         grid-template-columns: 1fr;
-        grid-template-rows: auto auto 1fr;
+        grid-template-rows: auto auto auto;
         gap: 34px;
         padding-top: 46px;
       }
       .hero-main { align-self: start; }
       .hero-kicker { margin-bottom: 36px; }
       .counter-wrap { gap: 14px; }
-      .counter { font-size: clamp(104px, 39vw, 210px); }
+      .counter { font-size: clamp(96px, 34vw, 180px); }
       .counter-copy { font-size: clamp(25px, 8vw, 42px); padding-bottom: 4px; }
       .hero-side { border-left: 0; border-top: 1px solid var(--line); padding: 26px 0 0; }
-      .hero-side h1 { max-width: 13ch; font-size: clamp(30px, 9vw, 48px); }
-      .hero-side p { margin-top: 14px; }
       .hero-foot { grid-column: 1; align-self: end; }
       .tower-layout, .feed-head, .closing { grid-template-columns: 1fr; }
       .tower-layout { gap: 42px; }
@@ -481,6 +576,14 @@
       .feed-summary { max-width: 42ch; }
       .issue-card, .issue-card:nth-child(5n + 1), .issue-card:nth-child(5n + 2), .skeleton-card { grid-column: 1 / -1; }
       .issue-card { min-height: 300px; }
+      .issues-grid.compact .issue-card,
+      .issues-grid.compact .issue-card:nth-child(5n + 1),
+      .issues-grid.compact .issue-card:nth-child(5n + 2) {
+        grid-template-columns: minmax(120px, 0.75fr) minmax(180px, 1.25fr) minmax(120px, 0.75fr);
+      }
+      .issues-grid.compact .meta-item.status { grid-column: 3; }
+      .issues-grid.compact .meta-item.location,
+      .issues-grid.compact .meta-item.impact { display: none; }
       .closing { align-items: start; }
       .closing-copy { max-width: 40ch; }
     }
@@ -495,13 +598,29 @@
       .counter-copy { font-size: clamp(22px, 8.4vw, 36px); }
       .hero-foot { grid-template-columns: 1fr; gap: 10px; }
       .updated { text-align: left; }
+      .signal { min-height: 100px; padding: 18px 14px; }
+      .signal:last-child { padding-right: 14px; }
       .section { padding-block: 64px; }
-      .tower-row { grid-template-columns: 54px minmax(0, 1fr) 24px; gap: 9px; }
+      .tower-row { grid-template-columns: 44px minmax(0, 1fr) 86px; gap: 9px; }
       .tower-track { height: 11px; }
+      .tower-breakdown { font-size: 8px; }
+      .filter-panel { padding-inline: 10px; }
+      .control-row { align-items: flex-start; }
+      .control-set { flex-wrap: wrap; }
+      .control-label { width: 100%; }
       .filter-label { width: 50px; }
       .issue-card { padding: 20px; }
-      .issue-type, .issue-card:nth-child(5n + 1) .issue-type { font-size: clamp(29px, 10vw, 42px); }
+      .issue-type, .issue-card:nth-child(5n + 1) .issue-type { font-size: clamp(27px, 8vw, 34px); }
       .card-meta { gap: 11px; }
+      .issues-grid.compact .issue-card,
+      .issues-grid.compact .issue-card:nth-child(5n + 1),
+      .issues-grid.compact .issue-card:nth-child(5n + 2) {
+        grid-template-columns: minmax(110px, 0.85fr) minmax(0, 1.35fr);
+        gap: 14px;
+        padding: 16px 0;
+      }
+      .issues-grid.compact .issue-description { grid-column: 2; }
+      .issues-grid.compact .meta-item.status { display: none; }
       .footer-inner { flex-direction: column; gap: 8px; }
     }
 
@@ -539,17 +658,21 @@
   </header>
 
   <main id="top">
-    <section class="hero shell" aria-labelledby="hero-title">
+    <section class="hero shell" aria-label="Community report overview">
       <div class="hero-main">
-        <p class="hero-kicker">You raised something. It is part of the public record now, alongside what your neighbors are living with.</p>
+        <p class="hero-kicker">Live community record</p>
         <div class="counter-wrap" aria-live="polite">
           <strong class="counter" id="heroCount">0</strong>
-          <span class="counter-copy">things your neighbors are dealing with</span>
+          <h1 class="counter-copy">reports across Lotus Zing</h1>
         </div>
       </div>
       <div class="hero-side">
-        <h1 id="hero-title">One complaint can be dismissed. <span>A pattern cannot.</span></h1>
-        <p>This is a shared view of what residents have reported across Lotus Zing. No rankings, no spin, just the record.</p>
+        <div class="signal-grid" id="signalGrid" aria-live="polite">
+          <div class="signal"><span class="signal-label">Urgent now</span><strong class="signal-value urgent" id="metricUrgent">0</strong></div>
+          <div class="signal"><span class="signal-label">Raised before</span><strong class="signal-value" id="metricRepeated">0</strong></div>
+          <div class="signal"><span class="signal-label">People affected</span><strong class="signal-value" id="metricAffected">0</strong><span class="signal-note">Known estimates only</span></div>
+          <div class="signal"><span class="signal-label">Most raised</span><strong class="signal-value" id="metricTopType">Waiting</strong></div>
+        </div>
       </div>
       <div class="hero-foot">
         <p class="insight-line" id="heroInsight">Reading the community log...</p>
@@ -579,6 +702,25 @@
           <p class="feed-summary" id="feedSummary">Loading reports from your neighbors.</p>
         </div>
         <div class="filter-panel" id="filterPanel" hidden>
+          <div class="control-row">
+            <div class="control-set">
+              <span class="control-label">View</span>
+              <div class="view-toggle" aria-label="Issue view">
+                <button class="view-button" type="button" data-view="story" aria-pressed="true">Stories</button>
+                <button class="view-button" type="button" data-view="compact" aria-pressed="false">Compact</button>
+              </div>
+            </div>
+            <label class="control-set">
+              <span class="control-label">Sort</span>
+              <select class="sort-select" id="sortSelect">
+                <option value="priority">Priority</option>
+                <option value="newest">Newest</option>
+                <option value="affected">Most affected</option>
+                <option value="duration">Longest running</option>
+                <option value="repeated">Reported repeatedly</option>
+              </select>
+            </label>
+          </div>
           <div class="filter-group" id="urgencyFilters" aria-label="Filter by urgency">
             <span class="filter-label">Urgency</span>
           </div>
@@ -615,7 +757,7 @@
     const URGENCY_ORDER = { urgent: 0, moderate: 1, low: 2 };
     const URGENCY_LABEL = { urgent: 'Pretty urgent', moderate: 'Managing for now', low: 'Noted' };
 
-    const state = { issues: [], urgency: 'all', type: 'all', tower: 'all', firstLoad: true };
+    const state = { issues: [], urgency: 'all', type: 'all', tower: 'all', sort: 'priority', view: 'story', firstLoad: true };
     const els = {
       count: document.getElementById('heroCount'),
       insight: document.getElementById('heroInsight'),
@@ -625,6 +767,7 @@
       filterPanel: document.getElementById('filterPanel'),
       urgencyFilters: document.getElementById('urgencyFilters'),
       typeFilters: document.getElementById('typeFilters'),
+      sortSelect: document.getElementById('sortSelect'),
       grid: document.getElementById('issuesGrid')
     };
 
@@ -746,14 +889,19 @@
       const topType = [...typeCounts.entries()].sort((a, b) => b[1] - a[1])[0];
       const urgentCount = issues.filter(issue => issue.urgency === 'urgent').length;
       const repeatedCount = issues.filter(issue => /yes|multiple|verbally|writing/i.test(issue.reportedBefore)).length;
+      const affectedCount = issues.reduce((sum, issue) => sum + (Number.parseInt(issue.affected, 10) || 0), 0);
+      document.getElementById('metricUrgent').textContent = urgentCount;
+      document.getElementById('metricRepeated').textContent = repeatedCount;
+      document.getElementById('metricAffected').textContent = affectedCount || 'Not known';
+      document.getElementById('metricTopType').textContent = topType?.[0] || 'None yet';
       if (!issues.length) {
         els.insight.textContent = 'The first report will begin the shared record.';
         return;
       }
-      const parts = [];
-      if (topType) parts.push(`<strong>${escapeHTML(topType[0])}</strong> is the most raised issue`);
-      if (urgentCount) parts.push(`<strong>${urgentCount}</strong> marked urgent`);
-      if (repeatedCount) parts.push(`<strong>${repeatedCount}</strong> raised before`);
+      const identifiedTowers = new Set(issues.filter(issue => issue.tower !== 'Tower not shared').map(issue => issue.tower)).size;
+      const missingTowers = issues.filter(issue => issue.tower === 'Tower not shared').length;
+      const parts = [`<strong>${typeCounts.size}</strong> issue ${typeCounts.size === 1 ? 'category' : 'categories'}`, `<strong>${identifiedTowers}</strong> ${identifiedTowers === 1 ? 'tower' : 'towers'} identified`];
+      if (missingTowers) parts.push(`<strong>${missingTowers}</strong> reports missing tower details`);
       els.insight.innerHTML = parts.join(' &nbsp;/&nbsp; ');
     }
 
@@ -776,14 +924,15 @@
         const moderateWidth = item.total ? (item.moderate / item.total) * 100 : 0;
         const lowWidth = item.total ? (item.low / item.total) * 100 : 0;
         const selected = state.tower === item.tower;
-        return `<button class="tower-row" type="button" data-tower="${escapeHTML(item.tower)}" aria-pressed="${selected}" aria-label="${escapeHTML(item.tower)}, ${item.total} reports">
+        const breakdown = item.total ? `<strong>${item.total}</strong> total / ${item.urgent} urgent` : 'No reports';
+        return `<button class="tower-row${item.total ? '' : ' is-empty'}" type="button" data-tower="${escapeHTML(item.tower)}" aria-pressed="${selected}" aria-label="${escapeHTML(item.tower)}, ${item.total} reports">
           <span class="tower-name">${escapeHTML(item.tower.replace('Tower ', 'T'))}</span>
           <span class="tower-track"><span class="tower-fill" style="width:${width}%">
             <span class="tower-segment urgent" style="width:${urgentWidth}%"></span>
             <span class="tower-segment moderate" style="width:${moderateWidth}%"></span>
             <span class="tower-segment low" style="width:${lowWidth}%"></span>
           </span></span>
-          <span class="tower-count">${item.total}</span>
+          <span class="tower-breakdown">${breakdown}</span>
         </button>`;
       }).join('');
       els.towerList.querySelectorAll('.tower-row').forEach(button => {
@@ -822,14 +971,41 @@
       const types = [...new Set(state.issues.map(issue => issue.type))].sort((a, b) => a.localeCompare(b));
       els.typeFilters.appendChild(createFilterButton('All issues', 'all', 'type', state.type));
       types.forEach(type => els.typeFilters.appendChild(createFilterButton(type, type, 'type', state.type)));
+      document.querySelectorAll('.view-button').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.view === state.view)));
+      els.sortSelect.value = state.sort;
+    }
+
+    function durationScore(value) {
+      const lower = (value || '').toLowerCase();
+      if (lower.includes('since possession')) return 1000;
+      if (lower.includes('3 months')) return 180;
+      if (lower.includes('1 month')) return 30;
+      if (lower.includes('week')) return 14;
+      if (lower.includes('few days')) return 4;
+      if (lower.includes('just started')) return 1;
+      return 0;
+    }
+
+    function repeatedScore(value) {
+      if (/multiple/i.test(value)) return 4;
+      if (/writing/i.test(value)) return 3;
+      if (/verbally/i.test(value)) return 2;
+      return 0;
     }
 
     function filteredIssues() {
-      return state.issues.filter(issue => {
+      const filtered = state.issues.filter(issue => {
         const urgencyMatch = state.urgency === 'all' || issue.urgency === state.urgency;
         const typeMatch = state.type === 'all' || issue.type === state.type;
         const towerMatch = state.tower === 'all' || issue.tower === state.tower;
         return urgencyMatch && typeMatch && towerMatch;
+      });
+      return filtered.sort((a, b) => {
+        if (state.sort === 'newest') return (b.date?.getTime() || 0) - (a.date?.getTime() || 0);
+        if (state.sort === 'affected') return (Number.parseInt(b.affected, 10) || 0) - (Number.parseInt(a.affected, 10) || 0);
+        if (state.sort === 'duration') return durationScore(b.duration) - durationScore(a.duration);
+        if (state.sort === 'repeated') return repeatedScore(b.reportedBefore) - repeatedScore(a.reportedBefore);
+        return URGENCY_ORDER[a.urgency] - URGENCY_ORDER[b.urgency] || repeatedScore(b.reportedBefore) - repeatedScore(a.reportedBefore) || (b.date?.getTime() || 0) - (a.date?.getTime() || 0);
       });
     }
 
@@ -847,6 +1023,7 @@
       const filters = [state.tower !== 'all' ? state.tower : '', state.type !== 'all' ? state.type : '', state.urgency !== 'all' ? URGENCY_LABEL[state.urgency] : ''].filter(Boolean);
       els.feedSummary.innerHTML = `<strong>${issues.length}</strong> ${issues.length === 1 ? 'report' : 'reports'}${filters.length ? ` matching ${escapeHTML(filters.join(', '))}` : ' across the community'}.`;
       els.grid.setAttribute('aria-busy', 'false');
+      els.grid.className = `issues-grid${state.view === 'compact' ? ' compact' : ''}`;
       if (!issues.length) {
         els.grid.innerHTML = `<div class="state-box"><div><h3>No reports match.</h3><p>Try another urgency, issue type, or tap the selected tower again to clear it.</p></div></div>`;
         return;
@@ -865,15 +1042,15 @@
           </div>
           <h3 class="issue-type">${escapeHTML(issue.type)}</h3>
           <p class="issue-description">${escapeHTML(issue.description)}</p>
-          ${issue.priorResponse ? `<p class="issue-context">Previous response: ${escapeHTML(issue.priorResponse)}</p>` : ''}
+          ${issue.priorResponse ? `<details class="issue-history"><summary>What happened when this was raised?</summary><p>${escapeHTML(issue.priorResponse)}</p></details>` : ''}
           <div class="card-meta">
-            <div class="meta-item"><span class="meta-label">Where</span><span class="meta-value">${escapeHTML(locationText)}</span></div>
-            <div class="meta-item"><span class="meta-label">Urgency</span><span class="meta-value urgency">${escapeHTML(URGENCY_LABEL[issue.urgency])}</span></div>
-            <div class="meta-item"><span class="meta-label">For how long</span><span class="meta-value">${escapeHTML(issue.duration)}</span></div>
-            <div class="meta-item"><span class="meta-label">Affected</span><span class="meta-value">${escapeHTML(affected)}</span></div>
-            <div class="meta-item"><span class="meta-label">Reported before</span><span class="meta-value">${escapeHTML(reportStatus(issue.reportedBefore))}</span></div>
-            <div class="meta-item"><span class="meta-label">Logged</span><span class="meta-value">${escapeHTML(relativeTime(issue.date))}</span></div>
+            <div class="meta-item location"><span class="meta-label">Where</span><span class="meta-value">${escapeHTML(locationText)}</span></div>
+            <div class="meta-item status"><span class="meta-label">Urgency</span><span class="meta-value urgency">${escapeHTML(URGENCY_LABEL[issue.urgency])}</span></div>
+            <div class="meta-item duration"><span class="meta-label">For how long</span><span class="meta-value">${escapeHTML(issue.duration)}</span></div>
+            <div class="meta-item impact"><span class="meta-label">Affected</span><span class="meta-value">${escapeHTML(affected)}</span></div>
+            <div class="meta-item repeated"><span class="meta-label">Reported before</span><span class="meta-value">${escapeHTML(reportStatus(issue.reportedBefore))}</span></div>
           </div>
+          <div class="card-footer"><span>${escapeHTML(relativeTime(issue.date))}</span><span>${escapeHTML(issue.id)}</span></div>
         </article>`;
       }).join('');
     }
@@ -910,6 +1087,18 @@
         else els.updated.textContent = 'Refresh delayed';
       }
     }
+
+    document.querySelectorAll('.view-button').forEach(button => {
+      button.addEventListener('click', () => {
+        state.view = button.dataset.view;
+        renderFilters();
+        renderIssues();
+      });
+    });
+    els.sortSelect.addEventListener('change', event => {
+      state.sort = event.target.value;
+      renderIssues();
+    });
 
     loadData();
     window.setInterval(loadData, 60000);
